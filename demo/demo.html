@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Gester</title>
+
+  <script type="text/javascript" src='../lib/jquery.js'></script>
+  <script type="text/javascript" src="../lib/underscore.js" > </script>
+  <script type="text/javascript" src="cv.js"></script> 
+  <script type="text/javascript" src="simpleBoundedQueue.js" > </script>
+  <script type="text/javascript" src="handtracking.js"></script> 
+  <script type="text/javascript" src="canvastracking.js"></script> 
+  <script type="text/javascript" src="demo.js"></script> 
+
+  <script>
+    var demo;
+    window.onload = function(){
+        demo = new Demo();
+        demo.start();
+        var tracker = new CanvasTracker(demo.canvas);
+        demo.tracker.skinner.registerListener(function(activityPoints) {
+            tracker.queueActivityPoint(activityPoints);
+        });
+        tracker.trackSelection(demo);
+        tracker.addSamplingSupport('samplerBtn');
+        tracker.enableGestureRecognition('gestureConsole');
+        demo.ut = function(h, v) {
+            demo.tracker.skinner.updateThreshold(h, v)
+        }
+    
+        $('#debugBtn').click(function() {
+            $('#canvas').toggle();
+        })
+    };
+  
+  </script>
+
+</head>
+
+<body style="font-family: monospace;">
+
+  <center>
+    <div style="margin: 10px;">Play the Ball</div>
+    <button id='debugBtn' >Debug</button>
+    <video id="video" autoplay="true" style="display:none;"></video>
+    <canvas id="canvas" style="width:600px; height:400px;border:1px solid black; display:none"></canvas>
+  </center>
+  <div style="margin: 10px; border:1px solid black" id="gestureConsole"></div>
+
+</body>
+
+</html>
