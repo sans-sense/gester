@@ -20,6 +20,7 @@ function SimpleBoundedQueue(capacity) {
             if (this.size() > this.capacity) {
                 headNode.payload = null;
                 headNode = headNode.next;
+                //console.log('Losing out data as we are slow in processing');
             }
 
         } else {

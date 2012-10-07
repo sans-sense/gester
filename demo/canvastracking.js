@@ -44,6 +44,9 @@ function CanvasTracker(canvas) {
     this.enableGestureRecognition = function(elementId) {
         this.logGestures(elementId);
         gestureProcessor.process();
+    };
+    this.registerGestureListener = function(callback) {
+        gestureProcessor.registerListener(callback);
     }
 }.call(CanvasTracker.prototype));
 
@@ -84,14 +87,13 @@ function GestureProcessor() {
     var proto = this;
     var logConsole = null;
     var gestureLog = new SimpleBoundedQueue(20);
+    var gestureListeners = [];
 
     function logChanges() {
         if (logConsole) {
-            if (currentGesture && currentGesture.direction) {
-                gestureLog.offer((currentGesture && currentGesture.toString()) || 'No Gesture');
-                console.log(currentGesture.toString());
-                $(logConsole).html(gestureLog.toArray());
-            }
+            gestureLog.offer((currentGesture && currentGesture.toString()) || 'No Gesture');
+            console.log(currentGesture.toString());
+            $(logConsole).html(gestureLog.toArray());
         }
     }
 
@@ -148,6 +150,14 @@ function GestureProcessor() {
         return deltas;
     }
 
+    function publishGesture() {
+        _.each(gestureListeners, function(listener) {listener.call(this, currentGesture)});
+    }
+
+    this.registerListener = function(listener) {
+        gestureListeners.push(listener);
+    }
+
     this.setLogConsole = function(elementId) {
         logConsole = '#' + elementId;
     }
@@ -170,7 +180,10 @@ function GestureProcessor() {
                     }
 
                     currentGesture.updateXPosition(overallChange, newXPosition);
-                    logChanges();
+                    if (currentGesture && currentGesture.direction) {
+                        publishGesture();
+                        logChanges();
+                    }
                 } else if (currentGesture) {
                     signalEndofGesture();
                 }

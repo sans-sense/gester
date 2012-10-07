@@ -31,6 +31,10 @@
         $('#debugBtn').click(function() {
             $('#canvas').toggle();
         })
+        tracker.registerGestureListener(function(currentGesture) {
+             var changeBy =  (currentGesture.direction == 'slide-left')? 1:-1;
+            $('#number').html(parseInt($('#number').html()) + changeBy)             
+        });
     };
   
   </script>
@@ -40,12 +44,16 @@
 <body style="font-family: monospace;">
 
   <center>
-    <div style="margin: 10px;">Play the Ball</div>
+    <div style="margin: 10px;">Slide your hand from left to right or right to left slowly in front of our webcam to move the numbers </div>
+    <div style="margin:10 px; border: 2px solid blue" id="number">
+      1
+    </div>
     <button id='debugBtn' >Debug</button>
     <video id="video" autoplay="true" style="display:none;"></video>
     <canvas id="canvas" style="width:600px; height:400px;border:1px solid black; display:none"></canvas>
   </center>
-  <div style="margin: 10px; border:1px solid black" id="gestureConsole"></div>
+  <div style="margin: 10px; border:1px solid black; display: none" id="gestureConsole"></div>
+  
 
 </body>
 
