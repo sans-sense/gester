@@ -31,11 +31,12 @@ function Demo(){
         this.video = $("#video")[0];
         this.canvas = $("#canvas")[0];
         this.context = this.canvas.getContext("2d");
+        this.tcContext = $("#thumbNailCanvas")[0].getContext("2d");
 
         this.canvas.width = parseInt(this.canvas.style.width) / 2;
         this.canvas.height = parseInt(this.canvas.style.height) / 2;
         
-        this.thumbNail = this.context.createImageData(this.canvas.width * 0.2, this.canvas.height * 0.2);
+        this.thumbNail = this.tcContext.createImageData(this.canvas.width * 0.2, this.canvas.height * 0.2);
         
         navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
         if (navigator.getUserMedia){
@@ -77,12 +78,12 @@ function Demo(){
 
     this.draw = function(candidate){
         if (candidate){
-            this.context.fillStyle = "black";
-            this.context.fillRect(0, 0, 600, 400);
-            this.context.putImageData(
+            //this.tcContext.fillStyle = "black";
+            //this.tcContext.fillRect(50, 50, 150, 100);
+            this.tcContext.putImageData(
                 this.createImage(this.tracker.mask, this.thumbNail), 
-                this.canvas.width/2,
-                this.canvas.height - this.thumbNail.height);
+                0,
+                0);
         }
     };
 
@@ -92,17 +93,13 @@ function Demo(){
         len = src.length, i = 0, j = 0, k = 0;
         
         for(i = 0; i < len; i += span){
-            
             for(j = 0; j < width; j += 5){
-                
                 dst[k] = dst[k + 1] = dst[k + 2] = src[i];
                 dst[k + 3] = 255;
                 k += 4;
-                
                 i += 5;
             }
         }
-        
         return imageDst;
     };
 }).call(Demo.prototype);
